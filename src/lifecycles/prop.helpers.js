@@ -5,11 +5,14 @@ import { isParcel, toName } from "../applications/app.helpers.js";
 import { formatErrorMessage } from "../applications/app-errors.js";
 
 export function getProps(appOrParcel) {
+  // 微应用名称
   const name = toName(appOrParcel);
+  // 获取自定义属性
   let customProps =
     typeof appOrParcel.customProps === "function"
       ? appOrParcel.customProps(name, window.location)
       : appOrParcel.customProps;
+  //
   if (
     typeof customProps !== "object" ||
     customProps === null ||
