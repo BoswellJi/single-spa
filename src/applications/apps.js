@@ -34,6 +34,7 @@ export function getAppChanges() {
   // We re-attempt to download applications in LOAD_ERROR after a timeout of 200 milliseconds
   const currentTime = new Date().getTime();
 
+  // app不同状态进行分组
   apps.forEach((app) => {
     const appShouldBeActive =
       app.status !== SKIP_BECAUSE_BROKEN && shouldBeActive(app);
