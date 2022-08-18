@@ -56,6 +56,7 @@ export function reroute(pendingPromises = [], eventArguments) {
     oldUrl = currentUrl,
     newUrl = (currentUrl = window.location.href);
 
+    // 开始加载微应用
   if (isStarted()) {
     appChangeUnderway = true;
     appsThatChanged = appsToUnload.concat(
@@ -238,6 +239,12 @@ export function reroute(pendingPromises = [], eventArguments) {
     callCapturedEventListeners(eventArguments);
   }
 
+  /**
+   * 定义自定义事件的：事件对象信息
+   * @param {*} isBeforeChanges 
+   * @param {*} extraProperties 
+   * @returns 
+   */
   function getCustomEventDetail(isBeforeChanges = false, extraProperties) {
     const newAppStatuses = {};
     const appsByNewStatus = {

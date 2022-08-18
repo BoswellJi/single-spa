@@ -135,6 +135,11 @@ export function registerApplication(
   }
 }
 
+/**
+ * 检查当前活跃
+ * @param {*} location 
+ * @returns 
+ */
 export function checkActivityFunctions(location = window.location) {
   return apps.filter((app) => app.activeWhen(location)).map(toName);
 }
