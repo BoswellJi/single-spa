@@ -122,12 +122,14 @@ export function reroute(pendingPromises = [], eventArguments) {
         return;
       }
 
+      // 卸载微应用
       const unloadPromises = appsToUnload.map(toUnloadPromise);
-
+      // 卸载dom
       const unmountUnloadPromises = appsToUnmount
         .map(toUnmountPromise)
         .map((unmountPromise) => unmountPromise.then(toUnloadPromise));
 
+        // 
       const allUnmountPromises = unmountUnloadPromises.concat(unloadPromises);
 
       const unmountAllPromise = Promise.all(allUnmountPromises);
