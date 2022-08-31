@@ -347,6 +347,13 @@ function validCustomProps(customProps) {
   );
 }
 
+/**
+ * @param {*} appNameOrConfig 微应用配置
+ * @param {*} appOrLoadApp 
+ * @param {*} activeWhen 
+ * @param {*} customProps 
+ * @returns 
+ */
 function sanitizeArguments(
   appNameOrConfig,
   appOrLoadApp,
