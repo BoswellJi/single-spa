@@ -114,7 +114,7 @@ export function reasonableTime(appOrParcel, lifecycle) {
     let finished = false;
     let errored = false;
 
-    // 安装应用
+    // 执行应用的生命周期函数
     appOrParcel[lifecycle](getProps(appOrParcel))
       .then((val) => {
         finished = true;

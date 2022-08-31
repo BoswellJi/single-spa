@@ -26,16 +26,21 @@ import { assign } from "../utils/assign";
 const apps = [];
 
 export function getAppChanges() {
+  // 卸载的微应用
   const appsToUnload = [],
+  // 未安装的微应用
     appsToUnmount = [],
+    // 已加载的微应用
     appsToLoad = [],
+    // 已安装的微应用
     appsToMount = [];
 
   // We re-attempt to download applications in LOAD_ERROR after a timeout of 200 milliseconds
   const currentTime = new Date().getTime();
 
-  // app不同状态进行分组
+  // 将微应用以不同状态进行分组
   apps.forEach((app) => {
+    // 微应用状态不为要被跳过的类型 && 路径活跃
     const appShouldBeActive =
       app.status !== SKIP_BECAUSE_BROKEN && shouldBeActive(app);
 
@@ -111,7 +116,7 @@ export function registerApplication(
         registration.name
       )
     );
-
+  // 注册的微应用实例
   apps.push(
     assign(
       {
@@ -135,6 +140,11 @@ export function registerApplication(
   }
 }
 
+/**
+ * 检查当前活跃
+ * @param {*} location 
+ * @returns 
+ */
 export function checkActivityFunctions(location = window.location) {
   return apps.filter((app) => app.activeWhen(location)).map(toName);
 }

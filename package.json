@@ -30,11 +30,6 @@
       ]
     }
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "pretty-quick --staged && concurrently yarn:test yarn:lint"
-    }
-  },
   "files": [
     "lib",
     "typings/single-spa.d.ts"
