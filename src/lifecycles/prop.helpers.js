@@ -12,7 +12,6 @@ export function getProps(appOrParcel) {
     typeof appOrParcel.customProps === "function"
       ? appOrParcel.customProps(name, window.location)
       : appOrParcel.customProps;
-  //
   if (
     typeof customProps !== "object" ||
     customProps === null ||

@@ -23,8 +23,13 @@ import { formatErrorMessage } from "./app-errors.js";
 import { isInBrowser } from "../utils/runtime-environment.js";
 import { assign } from "../utils/assign";
 
+// 注册的所有微应用
 const apps = [];
 
+/**
+ * 将微应用根据状态进行划分
+ * @returns 
+ */
 export function getAppChanges() {
   // 卸载的微应用
   const appsToUnload = [],
@@ -76,10 +81,18 @@ export function getAppChanges() {
   return { appsToUnload, appsToUnmount, appsToLoad, appsToMount };
 }
 
+/**
+ * 获取已安装的微应用的名称
+ * @returns 
+ */
 export function getMountedApps() {
   return apps.filter(isActive).map(toName);
 }
 
+/**
+ * 获取所有微应用的名称
+ * @returns 
+ */
 export function getAppNames() {
   return apps.map(toName);
 }
@@ -89,11 +102,23 @@ export function getRawAppData() {
   return [...apps];
 }
 
+/**
+ * 获取微应用的状态
+ * @param {*} appName 
+ * @returns 
+ */
 export function getAppStatus(appName) {
   const app = find(apps, (app) => toName(app) === appName);
   return app ? app.status : null;
 }
 
+/**
+ * 注册微应用
+ * @param {*} appNameOrConfig 
+ * @param {*} appOrLoadApp 
+ * @param {*} activeWhen 
+ * @param {*} customProps 
+ */
 export function registerApplication(
   appNameOrConfig,
   appOrLoadApp,
@@ -141,7 +166,7 @@ export function registerApplication(
 }
 
 /**
- * 检查当前活跃
+ * 检查当前活跃，并返回微应用名称
  * @param {*} location 
  * @returns 
  */
@@ -149,6 +174,11 @@ export function checkActivityFunctions(location = window.location) {
   return apps.filter((app) => app.activeWhen(location)).map(toName);
 }
 
+/**
+ * 取消注册指定的微应用
+ * @param {*} appName 
+ * @returns 
+ */
 export function unregisterApplication(appName) {
   if (apps.filter((app) => toName(app) === appName).length === 0) {
     throw Error(
@@ -167,6 +197,12 @@ export function unregisterApplication(appName) {
   });
 }
 
+/**
+ * 卸载微应用
+ * @param {*} appName 
+ * @param {*} opts 
+ * @returns 
+ */
 export function unloadApplication(appName, opts = { waitForUnmount: false }) {
   if (typeof appName !== "string") {
     throw Error(
@@ -188,6 +224,7 @@ export function unloadApplication(appName, opts = { waitForUnmount: false }) {
     );
   }
 
+  // 获取微应用的unload生命周期函数
   const appUnloadInfo = getAppUnloadInfo(toName(app));
   if (opts && opts.waitForUnmount) {
     // We need to wait for unmount before unloading the app

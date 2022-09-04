@@ -76,6 +76,7 @@ export function reroute(pendingPromises = [], eventArguments) {
 
   function loadApps() {
     return Promise.resolve().then(() => {
+      // 加载所有load状态的微应用
       const loadPromises = appsToLoad.map(toLoadPromise);
 
       return (
@@ -122,18 +123,19 @@ export function reroute(pendingPromises = [], eventArguments) {
         return;
       }
 
-      // 卸载微应用
+      // 退出所有unload状态的微应用
       const unloadPromises = appsToUnload.map(toUnloadPromise);
-      // 卸载dom
+      // 卸载所有的mount状态的微应用
       const unmountUnloadPromises = appsToUnmount
         .map(toUnmountPromise)
         .map((unmountPromise) => unmountPromise.then(toUnloadPromise));
 
-        // 
+        // 合并退出和卸载的微应用
       const allUnmountPromises = unmountUnloadPromises.concat(unloadPromises);
 
       const unmountAllPromise = Promise.all(allUnmountPromises);
 
+      // 所有需要卸载的微应用都卸载完成
       unmountAllPromise.then(() => {
         window.dispatchEvent(
           new CustomEvent(
@@ -184,7 +186,9 @@ export function reroute(pendingPromises = [], eventArguments) {
   }
 
   function finishUpAndReturn() {
+    // 已经安装的微应用
     const returnValue = getMountedApps();
+    // 执行promise回调的reslove函数
     pendingPromises.forEach((promise) => promise.resolve(returnValue));
 
     try {
@@ -208,7 +212,9 @@ export function reroute(pendingPromises = [], eventArguments) {
       });
     }
 
-    /* Setting this allows for subsequent calls to reroute() to actually perform
+    /**
+     * Setting this allows for subsequent calls to reroute() to actually perform
+     * 配置这个允许序列调用reroute来实际执行一个充值路由
      * a reroute instead of just getting queued behind the current reroute call.
      * We want to do this after the mounting/unmounting is done but before we
      * resolve the promise for the `reroute` function.
@@ -307,14 +313,20 @@ export function reroute(pendingPromises = [], eventArguments) {
 
 /**
  * Let's imagine that some kind of delay occurred during application loading.
+ * 让我想想一下，在应用加载期间出现了某种延迟
  * The user without waiting for the application to load switched to another route,
+ * 用户没有等待应用加载切换另一个路由
  * this means that we shouldn't bootstrap and mount that application, thus we check
+ * 这意味着，我们不应该启动和安装应用程序，
  * twice if that application should be active before bootstrapping and mounting.
+ * 因此，如果启动中和安装中之前应用应该活跃，我们就检查两次
  * https://github.com/single-spa/single-spa/issues/524
  */
 function tryToBootstrapAndMount(app, unmountAllPromise) {
   if (shouldBeActive(app)) {
+    // 启动所有需要启动的微应用
     return toBootstrapPromise(app).then((app) =>
+    // 卸载完需要卸载状态的微应用之后，才能安装，待安装的微应用
       unmountAllPromise.then(() =>
         shouldBeActive(app) ? toMountPromise(app) : app
       )

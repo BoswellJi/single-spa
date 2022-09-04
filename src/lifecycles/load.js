@@ -20,6 +20,11 @@ import {
 import { getProps } from "./prop.helpers.js";
 import { assign } from "../utils/assign.js";
 
+/**
+ * 加载微应用
+ * @param {*} app 
+ * @returns 
+ */
 export function toLoadPromise(app) {
   return Promise.resolve().then(() => {
     if (app.loadPromise) {
@@ -34,8 +39,10 @@ export function toLoadPromise(app) {
 
     let appOpts, isUserErr;
 
+    // 创建异步编程
     return (app.loadPromise = Promise.resolve()
       .then(() => {
+        // 加载微应用，并给加载函数传自定义参数
         const loadPromise = app.loadApp(getProps(app));
         if (!smellsLikeAPromise(loadPromise)) {
           // The name of the app will be prepended to this error message inside of the handleAppError function
@@ -51,6 +58,7 @@ export function toLoadPromise(app) {
             )
           );
         }
+        // 获取加载微应用结果
         return loadPromise.then((val) => {
           app.loadErrorTime = null;
 
