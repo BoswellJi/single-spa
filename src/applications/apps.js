@@ -41,6 +41,7 @@ export function getAppChanges() {
     appsToMount = [];
 
   // We re-attempt to download applications in LOAD_ERROR after a timeout of 200 milliseconds
+  // 200毫秒超时后，我们尝试在加载失败状态下载应用
   const currentTime = new Date().getTime();
 
   // 将微应用以不同状态进行分组
@@ -51,6 +52,7 @@ export function getAppChanges() {
 
     switch (app.status) {
       case LOAD_ERROR:
+        // 当前微应用路径活跃 && 错误超时200毫秒 重新加载
         if (appShouldBeActive && currentTime - app.loadErrorTime >= 200) {
           appsToLoad.push(app);
         }
@@ -262,6 +264,7 @@ export function unloadApplication(appName, opts = { waitForUnmount: false }) {
 }
 
 function immediatelyUnloadApp(app, resolve, reject) {
+  // 先卸载应用然后退出
   toUnmountPromise(app)
     .then(toUnloadPromise)
     .then(() => {
@@ -395,6 +398,7 @@ function validCustomProps(customProps) {
 }
 
 /**
+ * 处理注册微应用的参数
  * @param {*} appNameOrConfig 微应用配置
  * @param {*} appOrLoadApp 
  * @param {*} activeWhen 
@@ -407,6 +411,7 @@ function sanitizeArguments(
   activeWhen,
   customProps
 ) {
+  // 为对象类型，说明，参数都配置到了对象中
   const usingObjectAPI = typeof appNameOrConfig === "object";
 
   const registration = {
@@ -434,10 +439,10 @@ function sanitizeArguments(
     registration.activeWhen = activeWhen;
     registration.customProps = customProps;
   }
-
-  registration.loadApp = sanitizeLoadApp(registration.loadApp);
-  registration.customProps = sanitizeCustomProps(registration.customProps);
-  registration.activeWhen = sanitizeActiveWhen(registration.activeWhen);
+  // 加工参数
+  registration.loadApp = sanitizeLoadApp(registration.loadApp); // 必须是函数
+  registration.customProps = sanitizeCustomProps(registration.customProps); // 必须是对象
+  registration.activeWhen = sanitizeActiveWhen(registration.activeWhen); // 必须是函数
 
   return registration;
 }
@@ -456,12 +461,14 @@ function sanitizeCustomProps(customProps) {
 
 function sanitizeActiveWhen(activeWhen) {
   let activeWhenArray = Array.isArray(activeWhen) ? activeWhen : [activeWhen];
+  // 将每个路径改造成函数
   activeWhenArray = activeWhenArray.map((activeWhenOrPath) =>
     typeof activeWhenOrPath === "function"
       ? activeWhenOrPath
       : pathToActiveWhen(activeWhenOrPath)
   );
 
+  // 找到匹配当前地址的路径，即激活当前微应用
   return (location) =>
     activeWhenArray.some((activeWhen) => activeWhen(location));
 }

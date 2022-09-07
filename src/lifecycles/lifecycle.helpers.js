@@ -44,6 +44,11 @@ export function flattenFnArray(appOrParcel, lifecycle) {
   };
 }
 
+/**
+ * 像Promise实例
+ * @param {*} promise 
+ * @returns 
+ */
 export function smellsLikeAPromise(promise) {
   return (
     promise &&

@@ -52,6 +52,7 @@ function captureRoutingEvents(
 
   const eventNames = eventString.split(/\s+/);
   eventNames.forEach((eventName) => {
+    // 事件必须时hashchange popstate
     if (routingEventsListeningTo.indexOf(eventName) >= 0) {
       nativeFunctionToCall(eventName, fn);
       eventString = eventString.replace(eventName, "");

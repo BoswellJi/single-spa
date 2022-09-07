@@ -105,6 +105,12 @@ export function setUnloadMaxTime(time, dieOnTimeout, warningMillis) {
   };
 }
 
+/**
+ * 合理时间（调用微应用的生命周期函数
+ * @param {*} appOrParcel 
+ * @param {*} lifecycle 
+ * @returns 
+ */
 export function reasonableTime(appOrParcel, lifecycle) {
   const timeoutConfig = appOrParcel.timeouts[lifecycle];
   const warningPeriod = timeoutConfig.warningMillis;

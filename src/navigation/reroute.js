@@ -80,9 +80,11 @@ export function reroute(pendingPromises = [], eventArguments) {
       const loadPromises = appsToLoad.map(toLoadPromise);
 
       return (
+        // 加载完成所以待加载状态的微应用
         Promise.all(loadPromises)
           .then(callAllEventListeners)
           // there are no mounted apps, before start() is called, so we always return []
+          // start()调用前，没有已安装的app,所以我们一直返回空数组
           .then(() => [])
           .catch((err) => {
             callAllEventListeners();
@@ -145,8 +147,11 @@ export function reroute(pendingPromises = [], eventArguments) {
         );
       });
 
-      /* We load and bootstrap apps while other apps are unmounting, but we
+      /**
+       * We load and bootstrap apps while other apps are unmounting, but we
+       * 当其他微应用正在卸载时，我们加载和启动微应用，
        * wait to mount the app until all apps are finishing unmounting
+       * 我们等待所有当前微应用卸载完成后，才安装微应用
        */
       const loadThenMountPromises = appsToLoad.map((app) => {
         return toLoadPromise(app).then((app) =>
@@ -154,8 +159,11 @@ export function reroute(pendingPromises = [], eventArguments) {
         );
       });
 
-      /* These are the apps that are already bootstrapped and just need
+      /** 
+       * These are the apps that are already bootstrapped and just need
+       * 这些app已经被启动并且需要被安装
        * to be mounted. They each wait for all unmounting apps to finish up
+       * 他们安装之前，相互等待所有卸载中的微应用完成
        * before they mount.
        */
       const mountPromises = appsToMount
@@ -233,11 +241,17 @@ export function reroute(pendingPromises = [], eventArguments) {
     return returnValue;
   }
 
-  /* We need to call all event listeners that have been delayed because they were
+  /**
+   * We need to call all event listeners that have been delayed because they were
+   * 我们需要调用所有已经被延迟的事件监听器，因为他们正在single-spa上等待
    * waiting on single-spa. This includes haschange and popstate events for both
+   * 这包括haschange和popstate事件两者
    * the current run of performAppChanges(), but also all of the queued event listeners.
+   * 不仅当前的performAppChanges()运行，而且所有排队的事件监听器
    * We want to call the listeners in the same order as if they had not been delayed by
+   * 即使没有被single-spa延迟，我也还是想要用相同的顺序调用监听器
    * single-spa, which means queued ones first and then the most recent one.
+   * 这意味着一个接着一个
    */
   function callAllEventListeners() {
     pendingPromises.forEach((pendingPromise) => {

@@ -120,7 +120,9 @@ function patchedUpdateState(updateState, methodName) {
 function createPopStateEvent(state, originalMethodName) {
   // https://github.com/single-spa/single-spa/issues/224 and https://github.com/single-spa/single-spa-angular/issues/49
   // We need a popstate event even though the browser doesn't do one by default when you call replaceState, so that
+  // 我们需要一个popstate事件，虽然当你调用replaceState时，浏览器默认不处理，以至于
   // all the applications can reroute. We explicitly identify this extraneous event by setting singleSpa=true and
+  // 所有应用会重新导航，我们显示的标识这个外来的事件，通过singleSpa=true
   // singleSpaTrigger=<pushState|replaceState> on the event instance.
   let evt;
   try {
@@ -196,6 +198,11 @@ if (isInBrowser) {
   }
 }
 
+/**
+ * 让url变成对象，可解析
+ * @param {*} str 
+ * @returns 
+ */
 function parseUri(str) {
   const anchor = document.createElement("a");
   anchor.href = str;
