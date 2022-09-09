@@ -9,9 +9,11 @@ import { reasonableTime } from "../applications/timeouts.js";
 
 export function toUnmountPromise(appOrParcel, hardFail) {
   return Promise.resolve().then(() => {
+    // 只卸载已经被安装的
     if (appOrParcel.status !== MOUNTED) {
       return appOrParcel;
     }
+    // 标识微应用正在卸载中状态
     appOrParcel.status = UNMOUNTING;
 
     const unmountChildrenParcels = Object.keys(

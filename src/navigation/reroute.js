@@ -177,8 +177,11 @@ export function reroute(pendingPromises = [], eventArguments) {
           throw err;
         })
         .then(() => {
-          /* Now that the apps that needed to be unmounted are unmounted, their DOM navigation
+          /**
+           * Now that the apps that needed to be unmounted are unmounted, their DOM navigation
+           * 既然微应用需要被卸载，他们的dom导航事件应该被清理
            * events (like hashchange or popstate) should have been cleaned up. So it's safe
+           * 所以保留捕获事件监听器处理dom事件
            * to let the remaining captured event listeners to handle about the DOM event.
            */
           callAllEventListeners();
@@ -211,8 +214,11 @@ export function reroute(pendingPromises = [], eventArguments) {
         new CustomEvent("single-spa:routing-event", getCustomEventDetail())
       );
     } catch (err) {
-      /* We use a setTimeout because if someone else's event handler throws an error, single-spa
+      /** 
+       * We use a setTimeout because if someone else's event handler throws an error, single-spa
+       * 因为如果某个其他的事件处理器抛出一个错误，我们使用一个setTimeout
        * needs to carry on. If a listener to the event throws an error, it's their own fault, not
+       * single-spa需要继续执行，如果一个事件的监听器抛出一个错误，是他自己的错误，不是single-spa的
        * single-spa's.
        */
       setTimeout(() => {
@@ -222,9 +228,10 @@ export function reroute(pendingPromises = [], eventArguments) {
 
     /**
      * Setting this allows for subsequent calls to reroute() to actually perform
-     * 配置这个允许序列调用reroute来实际执行一个充值路由
+     * 配置这个允许序列调用reroute来实际执行一个路由，
      * a reroute instead of just getting queued behind the current reroute call.
      * We want to do this after the mounting/unmounting is done but before we
+     * 安装卸载完成后，我们想要做这个，但是，在那之前，我们解析reroute函数的promise之前
      * resolve the promise for the `reroute` function.
      */
     appChangeUnderway = false;

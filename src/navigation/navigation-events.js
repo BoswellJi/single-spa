@@ -4,9 +4,12 @@ import { formatErrorMessage } from "../applications/app-errors.js";
 import { isInBrowser } from "../utils/runtime-environment.js";
 import { isStarted } from "../start.js";
 
-/* We capture navigation event listeners so that we can make sure
+/**
+ * We capture navigation event listeners so that we can make sure
+ * 我们捕获导航事件监听器，这样可以使得我们确保，应用导航事件直到single-spa确保
  * that application navigation listeners are not called until
  * single-spa has ensured that the correct applications are
+ * 正确的应用宝贝卸载和安装
  * unmounted and mounted.
  */
 const capturedEventListeners = {
@@ -40,22 +43,31 @@ export function navigateToUrl(obj) {
     );
   }
 
+  // 当前页面地址
   const current = parseUri(window.location.href);
+  // 跳转页面地址
   const destination = parseUri(url);
 
+  // hash值，即修改当前地址hash
   if (url.indexOf("#") === 0) {
     window.location.hash = destination.hash;
+
+    // 主机地址不同，直接修改地址
   } else if (current.host !== destination.host && destination.host) {
     if (process.env.BABEL_ENV === "test") {
       return { wouldHaveReloadedThePage: true };
     } else {
       window.location.href = url;
     }
+
+    // 路径和查询参数相同，修改hash
   } else if (
     destination.pathname === current.pathname &&
     destination.search === current.search
   ) {
     window.location.hash = destination.hash;
+
+    // 历史
   } else {
     // different path, host, or query params
     window.history.pushState(null, null, url);
@@ -65,10 +77,13 @@ export function navigateToUrl(obj) {
 export function callCapturedEventListeners(eventArguments) {
   if (eventArguments) {
     const eventType = eventArguments[0].type;
+    // 是否为hashchange popstate事件
     if (routingEventsListeningTo.indexOf(eventType) >= 0) {
+      // 获取监听器函数数组，并执行
       capturedEventListeners[eventType].forEach((listener) => {
         try {
           // The error thrown by application event listener should not break single-spa down.
+          // 被应用事件监听器抛出的错误不应该毁掉single-spa
           // Just like https://github.com/single-spa/single-spa/blob/85f5042dff960e40936f3a5069d56fc9477fac04/src/navigation/reroute.js#L140-L146 did
           listener.apply(this, eventArguments);
         } catch (e) {
@@ -100,14 +115,18 @@ function patchedUpdateState(updateState, methodName) {
     if (!urlRerouteOnly || urlBefore !== urlAfter) {
       if (isStarted()) {
         // fire an artificial popstate event once single-spa is started,
+        // 一旦single-spa开始,就会触发一个合成popstate事件
         // so that single-spa applications know about routing that
+        // 这样single-spa应用知道在不同应用中发生的路由
         // occurs in a different application
         window.dispatchEvent(
           createPopStateEvent(window.history.state, methodName)
         );
       } else {
         // do not fire an artificial popstate event before single-spa is started,
+        // single-spa开始之前,不会触发合成popstate事件
         // since no single-spa applications need to know about routing events
+        // 因为没有single-spa应用需要知道他们自己路由之外的路由事件
         // outside of their own router.
         reroute([]);
       }
@@ -140,10 +159,12 @@ function createPopStateEvent(state, originalMethodName) {
 
 if (isInBrowser) {
   // We will trigger an app change for any routing events.
+  // 对于任何路由事件,我们会触发微应用改变
   window.addEventListener("hashchange", urlReroute);
   window.addEventListener("popstate", urlReroute);
 
   // Monkeypatch addEventListener so that we can ensure correct timing
+  // 猴子补丁事件监听,这样我们能确保正确的时间线
   const originalAddEventListener = window.addEventListener;
   const originalRemoveEventListener = window.removeEventListener;
   window.addEventListener = function (eventName, fn) {
@@ -191,7 +212,9 @@ if (isInBrowser) {
       )
     );
   } else {
-    /* For convenience in `onclick` attributes, we expose a global function for navigating to
+    /**
+     * For convenience in `onclick` attributes, we expose a global function for navigating to
+     * 为了统一onclick属性,我们暴露了一个全局函数给a链接的导航
      * whatever an <a> tag's href is.
      */
     window.singleSpaNavigate = navigateToUrl;

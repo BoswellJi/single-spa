@@ -39,6 +39,15 @@ export function ensureJQuerySupport(jQuery = window.jQuery) {
   }
 }
 
+/**
+ * 捕获路由事件
+ * @param {*} originalJQueryFunction 原始的jquery注册监听器的函数
+ * @param {*} nativeFunctionToCall 原始的web注册监听器的函数
+ * @param {*} eventString 事件名
+ * @param {*} fn 监听器
+ * @param {*} originalArgs 参数
+ * @returns 
+ */
 function captureRoutingEvents(
   originalJQueryFunction,
   nativeFunctionToCall,

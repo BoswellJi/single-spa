@@ -133,7 +133,7 @@ export function registerApplication(
     activeWhen,
     customProps
   );
-
+  // 获取注册的微应用名称并查找当前注册的微应用名称是否存在，存在就说明是在重复注册
   if (getAppNames().indexOf(registration.name) !== -1)
     throw Error(
       formatErrorMessage(

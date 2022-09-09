@@ -2,6 +2,12 @@ import { objectType, toName } from "./app.helpers";
 
 let errorHandlers = [];
 
+/**
+ * 处理微应用错误
+ * @param {*} err 
+ * @param {*} app 
+ * @param {*} newStatus 
+ */
 export function handleAppError(err, app, newStatus) {
   const transformedErr = transformErr(err, app, newStatus);
 
@@ -14,6 +20,10 @@ export function handleAppError(err, app, newStatus) {
   }
 }
 
+/**
+ * 添加错误处理
+ * @param {*} handler 
+ */
 export function addErrorHandler(handler) {
   if (typeof handler !== "function") {
     throw Error(
@@ -27,6 +37,11 @@ export function addErrorHandler(handler) {
   errorHandlers.push(handler);
 }
 
+/**
+ * 删除错误处理
+ * @param {*} handler 
+ * @returns 
+ */
 export function removeErrorHandler(handler) {
   if (typeof handler !== "function") {
     throw Error(
@@ -47,6 +62,13 @@ export function removeErrorHandler(handler) {
   return removedSomething;
 }
 
+/**
+ * 格式化错误信息
+ * @param {*} code 
+ * @param {*} msg 
+ * @param  {...any} args 
+ * @returns 
+ */
 export function formatErrorMessage(code, msg, ...args) {
   return `single-spa minified message #${code}: ${
     msg ? msg + " " : ""
@@ -55,7 +77,15 @@ export function formatErrorMessage(code, msg, ...args) {
   }`;
 }
 
+/**
+ * 转换错误
+ * @param {*} ogErr 
+ * @param {*} appOrParcel 
+ * @param {*} newStatus 
+ * @returns 
+ */
 export function transformErr(ogErr, appOrParcel, newStatus) {
+  // 某种类型 的 某个微应用 死在了生命周期的某个状态
   const errPrefix = `${objectType(appOrParcel)} '${toName(
     appOrParcel
   )}' died in status ${appOrParcel.status}: `;
@@ -64,6 +94,7 @@ export function transformErr(ogErr, appOrParcel, newStatus) {
 
   if (ogErr instanceof Error) {
     try {
+      // 拼接错误信息
       ogErr.message = errPrefix + ogErr.message;
     } catch (err) {
       /* Some errors have read-only message properties, in which case there is nothing
