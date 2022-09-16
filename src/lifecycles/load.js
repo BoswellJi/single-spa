@@ -42,7 +42,7 @@ export function toLoadPromise(app) {
     // 创建异步编程
     return (app.loadPromise = Promise.resolve()
       .then(() => {
-        // 加载微应用，并给加载函数传自定义参数
+        // 加载微应用，并给加载函数传自定义参数 ,system.import()函数的返回值
         const loadPromise = app.loadApp(getProps(app));
         if (!smellsLikeAPromise(loadPromise)) {
           // The name of the app will be prepended to this error message inside of the handleAppError function

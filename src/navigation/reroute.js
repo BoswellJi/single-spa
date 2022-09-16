@@ -44,7 +44,7 @@ export function reroute(pendingPromises = [], eventArguments) {
       });
     });
   }
-
+  // 各种状态下的微应用
   const {
     appsToUnload,
     appsToUnmount,
