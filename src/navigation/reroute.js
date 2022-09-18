@@ -31,10 +31,12 @@ let appChangeUnderway = false,
 
 export function triggerAppChange() {
   // Call reroute with no arguments, intentionally
+  // 有意调用不带参数的reroute()
   return reroute();
 }
 
 export function reroute(pendingPromises = [], eventArguments) {
+  // 微应用正在变化
   if (appChangeUnderway) {
     return new Promise((resolve, reject) => {
       peopleWaitingOnAppChange.push({
@@ -53,10 +55,11 @@ export function reroute(pendingPromises = [], eventArguments) {
   } = getAppChanges();
   let appsThatChanged,
     navigationIsCanceled = false,
+    // 保存上一个页面的url，将当前页面url作为当前url
     oldUrl = currentUrl,
     newUrl = (currentUrl = window.location.href);
 
-    // 开始加载微应用
+  // 开始安装微应用
   if (isStarted()) {
     appChangeUnderway = true;
     appsThatChanged = appsToUnload.concat(
@@ -66,6 +69,7 @@ export function reroute(pendingPromises = [], eventArguments) {
     );
     return performAppChanges();
   } else {
+    // 开始加载微应用
     appsThatChanged = appsToLoad;
     return loadApps();
   }
@@ -196,8 +200,12 @@ export function reroute(pendingPromises = [], eventArguments) {
     });
   }
 
+  /**
+   * 结束并返回
+   * @returns 
+   */
   function finishUpAndReturn() {
-    // 已经安装的微应用
+    // 已经安装的微应用apps
     const returnValue = getMountedApps();
     // 执行promise回调的reslove函数
     pendingPromises.forEach((promise) => promise.resolve(returnValue));

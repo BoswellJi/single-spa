@@ -169,6 +169,7 @@ if (isInBrowser) {
   const originalRemoveEventListener = window.removeEventListener;
   window.addEventListener = function (eventName, fn) {
     if (typeof fn === "function") {
+      // 将事件监听器添加到缓存中
       if (
         routingEventsListeningTo.indexOf(eventName) >= 0 &&
         !find(capturedEventListeners[eventName], (listener) => listener === fn)

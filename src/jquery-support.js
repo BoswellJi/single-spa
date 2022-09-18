@@ -55,19 +55,24 @@ function captureRoutingEvents(
   fn,
   originalArgs
 ) {
+  // 这里是因为jquery事件可能是object类型的参数{click:fn,dbclick:fn}
   if (typeof eventString !== "string") {
     return originalJQueryFunction.apply(this, originalArgs);
   }
-
+  // 分割事件到数组中，'hashchange popstate'
   const eventNames = eventString.split(/\s+/);
+  // 遍历事件
   eventNames.forEach((eventName) => {
     // 事件必须时hashchange popstate
     if (routingEventsListeningTo.indexOf(eventName) >= 0) {
+      // 才会使用原生注册监听器函数
       nativeFunctionToCall(eventName, fn);
+      // 注册后从原始的事件参数中去掉
       eventString = eventString.replace(eventName, "");
     }
   });
 
+  // 事件字符串空了，说明只有popstate,hashchange这两种事件
   if (eventString.trim() === "") {
     return this;
   } else {
