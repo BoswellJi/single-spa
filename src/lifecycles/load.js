@@ -44,7 +44,7 @@ export function toLoadPromise(app) {
     // 给微应用添加loadPromise
     return (app.loadPromise = Promise.resolve()
       .then(() => {
-        // 加载微应用，并给加载函数传自定义参数
+        // 加载微应用，并给加载函数传自定义参数 ,system.import()函数的返回值
         const loadPromise = app.loadApp(getProps(app));
         // 返回的不是promise对象，即加载失败
         if (!smellsLikeAPromise(loadPromise)) {

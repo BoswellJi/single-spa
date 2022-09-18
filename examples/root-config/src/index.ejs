@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Vue Microfrontends</title>
+  <script type="systemjs-importmap">
+    {
+      "imports": {
+        "single-spa": "https://cdn.jsdelivr.net/npm/single-spa@5.9.4/lib/system/single-spa.min.js",
+        "vue": "https://cdn.jsdelivr.net/npm/vue@2.6.11/dist/vue.min.js",
+        "vue-router": "https://cdn.jsdelivr.net/npm/vue-router@3.1.6/dist/vue-router.min.js",
+
+        "@vue-mf/root-config": "//localhost:9000/vue-mf-root-config.js",
+        "@vue-mf/styleguide": "https://vue.microfrontends.app/styleguide/566ace2deeba4ca56b38fca7fa52d4d89ac32634/vue-mf-styleguide.js",
+        "@vue-mf/navbar": "https://vue.microfrontends.app/navbar/01794334ef10fb4059f6658465f42597d24cb9d1/js/app.js",
+        "@vue-mf/dogs-dashboard": "https://vue.microfrontends.app/dogs-dashboard/48cef902e48d293e1588320c0d855f7252742ab6/js/app.js",
+        "@vue-mf/rate-dogs": "https://vue.microfrontends.app/rate-dogs/f5951b9fe7521f1134394244e239a47929239efb/js/app.js"
+      }
+    }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/systemjs/dist/system.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/systemjs/dist/extras/amd.js"></script>
+</head>
+
+<body>
+  <script>
+    System.import('single-spa').then(({ registerApplication, start }) => {
+      registerApplication({
+        name: "@vue-mf/navbar",
+        app: () => System.import("@vue-mf/navbar"),
+        activeWhen: "/",
+        customProps: {
+          githubLink: "https://github.com/vue-microfrontends/root-config",
+        },
+      });
+      registerApplication({
+        name: "@vue-mf/dogs-dashboard",
+        app: () => System.import("@vue-mf/dogs-dashboard"),
+        activeWhen: "/view-doggos",
+      });
+
+      // registerApplication({
+      //   name: "@vue-mf/rate-dogs",
+      //   app: () => System.import("@vue-mf/rate-dogs"),
+      //   activeWhen: "/rate-doggos",
+      // });
+
+      registerApplication({
+        name: "@vue-mf/root-config",
+        app: () => System.import("@vue-mf/root-config"),
+        activeWhen: "/rate-doggos",
+      });
+
+      start();
+    });
+  </script>
+</body>
+
+</html>
