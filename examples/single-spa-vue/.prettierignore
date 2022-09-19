@@ -1,0 +1,6 @@
+.prettierignore
+.gitignore
+dist
+LICENSE
+yarn.lock
+pnpm-lock.yaml
