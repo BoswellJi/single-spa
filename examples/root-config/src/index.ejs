@@ -42,17 +42,17 @@
         activeWhen: "/view-doggos",
       });
 
-      // registerApplication({
-      //   name: "@vue-mf/rate-dogs",
-      //   app: () => System.import("@vue-mf/rate-dogs"),
-      //   activeWhen: "/rate-doggos",
-      // });
-
       registerApplication({
-        name: "@vue-mf/root-config",
-        app: () => System.import("@vue-mf/root-config"),
+        name: "@vue-mf/rate-dogs",
+        app: () => System.import("@vue-mf/rate-dogs"),
         activeWhen: "/rate-doggos",
       });
+
+      // registerApplication({
+      //   name: "@vue-mf/root-config",
+      //   app: () => System.import("@vue-mf/root-config"),
+      //   activeWhen: "/rate-doggos",
+      // });
 
       start();
     });

@@ -127,6 +127,7 @@ export function toLoadPromise(app) {
             return app;
           }
 
+          // 这里还会将微应用实例属性补充完整
           if (appOpts.devtools && appOpts.devtools.overlays) {
             app.devtools.overlays = assign(
               {},
@@ -135,7 +136,7 @@ export function toLoadPromise(app) {
             );
           }
 
-          // 加载完成，变为未启动状态
+          // 加载完成，变为未启动状态，
           app.status = NOT_BOOTSTRAPPED;
           app.bootstrap = flattenFnArray(appOpts, "bootstrap");
           app.mount = flattenFnArray(appOpts, "mount");

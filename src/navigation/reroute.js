@@ -46,7 +46,7 @@ export function reroute(pendingPromises = [], eventArguments) {
       });
     });
   }
-  // 各种状态下的微应用
+  // 各种状态下的微应用,将微应用根据状态进行分类
   const {
     appsToUnload,
     appsToUnmount,
@@ -80,7 +80,7 @@ export function reroute(pendingPromises = [], eventArguments) {
 
   function loadApps() {
     return Promise.resolve().then(() => {
-      // 加载所有load状态的微应用
+      // 加载所有load状态的微应用，遍历微应用进行加载
       const loadPromises = appsToLoad.map(toLoadPromise);
 
       return (

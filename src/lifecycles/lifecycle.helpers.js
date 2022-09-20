@@ -12,7 +12,14 @@ export function validLifecycleFn(fn) {
   }
 }
 
+/**
+ * 打平函数数组
+ * @param {*} appOrParcel 
+ * @param {*} lifecycle 
+ * @returns 
+ */
 export function flattenFnArray(appOrParcel, lifecycle) {
+  // 首先将微应用的生命周期函数整理成数组
   let fns = appOrParcel[lifecycle] || [];
   fns = Array.isArray(fns) ? fns : [fns];
   if (fns.length === 0) {
@@ -22,6 +29,7 @@ export function flattenFnArray(appOrParcel, lifecycle) {
   const type = objectType(appOrParcel);
   const name = toName(appOrParcel);
 
+  // 将promise函数数组组织成链式的，保证安装函数顺序执行
   return function (props) {
     return fns.reduce((resultPromise, fn, index) => {
       return resultPromise.then(() => {

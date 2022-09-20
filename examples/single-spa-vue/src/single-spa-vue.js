@@ -98,7 +98,7 @@ function mount(opts, mountedInstances, props) {
         appOptions.el = `#${CSS.escape(htmlId)}`;
         domEl = document.getElementById(htmlId);
         if (!domEl) {
-          domEl = document.createElement("div");
+          domEl = document.createElement("div"); 
           domEl.id = htmlId;
           document.body.appendChild(domEl);
         }
