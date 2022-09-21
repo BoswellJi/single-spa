@@ -36,7 +36,7 @@ export function triggerAppChange() {
 }
 
 export function reroute(pendingPromises = [], eventArguments) {
-  // 微应用正在变化
+  // 微应用正在安装，要让其他需要安装的微应用放到队列等待
   if (appChangeUnderway) {
     return new Promise((resolve, reject) => {
       peopleWaitingOnAppChange.push({
@@ -244,9 +244,13 @@ export function reroute(pendingPromises = [], eventArguments) {
      */
     appChangeUnderway = false;
 
+    // 这里是入口位置等待安装的微应用
     if (peopleWaitingOnAppChange.length > 0) {
-      /* While we were rerouting, someone else triggered another reroute that got queued.
+      /**
+       * While we were rerouting, someone else triggered another reroute that got queued.
+       * 当我们重新路由时，其他人触发了另一个被排队的重新路由。
        * So we need reroute again.
+       * 所以我们需要再次重新路由
        */
       const nextPendingPromises = peopleWaitingOnAppChange;
       peopleWaitingOnAppChange = [];

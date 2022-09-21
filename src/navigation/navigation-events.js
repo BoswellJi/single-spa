@@ -74,6 +74,10 @@ export function navigateToUrl(obj) {
   }
 }
 
+/**
+ * 调用被捕获的事件监听器
+ * @param {*} eventArguments 
+ */
 export function callCapturedEventListeners(eventArguments) {
   if (eventArguments) {
     const eventType = eventArguments[0].type;
